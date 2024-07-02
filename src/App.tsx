@@ -3,54 +3,31 @@ import logo from './logo.svg';
 import './App.css';
 import { theme, Layout, Menu, Breadcrumb, ConfigProvider } from 'antd';
 import { Header, Content, Footer } from 'antd/es/layout/layout';
-const { darkAlgorithm, compactAlgorithm } = theme;
-
-
-
+import { AppHeader } from './App.Header';
+import { AppFooter } from './App.Footer';
+const { darkAlgorithm  } = theme;
 
 const App: React.FC = () => {
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
-
+ 
   return (
     <ConfigProvider
         theme={{
             "token": {
-              "colorPrimary": "#f9b17a",
-              "colorInfo": "#f9b17a",
-              "colorLink": "#f9b17a",
-              "colorBgBase": "#161e30",
-              "colorBgContainer": "#2d3250",
-              "borderRadius": 0
+                "colorBgBase": "#222831",
+                "colorTextBase": "#eeeeee",
+                "colorPrimary": "#2d4059",
+                "colorInfo": "#2d4059",
+                "borderRadius": 0
             },
             "algorithm": darkAlgorithm
           }}
         >
     <Layout style={{height: "100vh"}}>
-      <Header
-        style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 1,
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <div className="demo-logo" />
-        <Menu
-        //   theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={['2']}
-        />
-      </Header>
-      <Content >
-        
+        <AppHeader/>
+      <Content style={{height: "100%"}}>
+        <div></div>
       </Content>
-      <Footer style={{ textAlign: 'center' }}>
-        Ant Design ©{new Date().getFullYear()} Created by Ant UED
-      </Footer>
+      <AppFooter />
     </Layout>
     </ConfigProvider>
     
