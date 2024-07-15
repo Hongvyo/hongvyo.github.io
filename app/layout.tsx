@@ -2,9 +2,13 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import NavBar from "./components/ui/navbar";
+import NavBar from "./_components/ui/navbar";
 import clsx from "clsx";
 import { cn } from "@/lib/utils";
+import "reflect-metadata";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 
 const inter = Inter({ subsets: ["latin"] });
 

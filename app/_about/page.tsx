@@ -30,11 +30,11 @@ export default async function About() {
           <div>
             I love to create! My creativity usually starts with a hobby.
             <br />
-            Sometime later I get too obsessed with it, I just have to create
+            I get too obsessed with it, I just have to create
             something from it.
             <br /> That's why I launched my very first side project -
             Thirteenth,
-            <br /> which is a web app for watching global bitcoin arbitrages as
+            <br /> which is an web app for watching global bitcoin arbitrages as
             a heatmap.
             <br /> You can check it out here{" "}
             <Link href="https://thirteenth.hongvyo.com" >thirteenth.hongvyo.com</Link>
