@@ -6,8 +6,11 @@ import * as Rx from "rxjs";
 
 export async function loadFrontMattersFromDir(
   dir: PathLike,
-  { readContent }: { readContent: boolean | number }
+  options?: { readContent: boolean | number }
 ) {
+  const { readContent } = options || {
+    readContent: false
+  };
   const files = await fsPromises.readdir(dir);
   const stream = Rx.from(files).pipe(
     Rx.mergeMap(async (fileName: string, index: number) => {
@@ -44,12 +47,15 @@ export async function readFrontmatter(
           }
           if (frontmatterElimFound > 1) {
             reader.close();
-            resolve(lines.join("\n"));
           }
         }
         // if (reader.terminal)
       });
+      reader.on("close", () => {
+        resolve(lines.join("\n"));
+      });
     });
+    console.log(lines)
     return lines;
   } catch (e) {
     throw e;

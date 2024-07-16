@@ -32,7 +32,8 @@ export async function LogsPageLayout<T>({
 }: LogsPageLayoutProps) {
   const { category } = metadata;
   const files = await loadFrontMattersFromDir(
-    path.join(process.cwd(), "app", "logs", category, "logs")
+    path.join(process.cwd(), "app", "logs", category, "logs"),
+    { readContent: 4 }
   );
   return (
     <div className={cn("space-y-8")}>
@@ -45,7 +46,7 @@ export async function LogsPageLayout<T>({
           recent posts
         </div>
         <LogsList
-          logs={files.slice(0, 5).map((frontmatter: any ) => {
+          logs={files.slice(0, 4).map((frontmatter: any) => {
             //   const parsed: LogsMatterData = mattered
             //     .data as LogsMatterData;
             //   console.log(mattered);
@@ -60,7 +61,11 @@ export async function LogsPageLayout<T>({
         />
       </div>
 
-      <LogsTable />
+      <LogsTable
+        logs={files.map((frontmatter: any) => {
+          return plainToInstance(Log, frontmatter).data;
+        })}
+      />
       {/* <div>{children}</div> */}
     </div>
   );
