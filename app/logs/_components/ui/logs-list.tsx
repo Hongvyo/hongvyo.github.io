@@ -17,6 +17,7 @@ export type LogsListProps = Readonly<{
 export type LogsListItemProps = Log["data"];
 
 export function LogsListItem(props: LogsListItemProps) {
+  const day = dayjs(props.date);
   return (
     <button
       className={cn(
@@ -28,9 +29,9 @@ export function LogsListItem(props: LogsListItemProps) {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger className={cn("text-muted-foreground")}>
-              {props.date.fromNow()}
+              {day.fromNow()}
             </TooltipTrigger>
-            <TooltipContent>{props.date.format("YYYY-MM-DD")}</TooltipContent>
+            <TooltipContent>{day.format("YYYY-MM-DD")}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </div>

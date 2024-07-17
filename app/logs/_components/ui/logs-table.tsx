@@ -1,3 +1,4 @@
+"use client";
 import {
   Table,
   TableBody,
@@ -11,7 +12,12 @@ import {
 import { cn } from "@/lib/utils";
 import { Log } from "../../_types/Log";
 import Link from "next/link";
-import { TablePagination } from "./pagination";
+import { TablePagination, TablePaginationProps } from "./pagination";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+dayjs.extend(relativeTime);
 
 export type LogsTableProps = {
   logs: Log["data"][];
@@ -30,41 +36,63 @@ export type LogsTableProps = {
  * 페이징 처리를 생각한다면, 파일의 갯수가 많은 것은 여전히 문제가 되긴함.
  */
 export function LogsTable({ logs, pagination }: LogsTableProps) {
+  const [{ current, pageSize, total }, setPagination] = useState<
+    Pick<TablePaginationProps, "current" | "pageSize" | "total">
+  >(() => pagination);
   return (
-    <>
-      <Table className={cn("border-t")}>
-        {/* <TableCaption>.</TableCaption> */}
-        <TableHeader>
-          <TableRow>
-            <TableHead>title</TableHead>
-            <TableHead>description</TableHead>
-            <TableHead>tags</TableHead>
-            <TableHead className={cn("w-[120px]")}>date</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {logs.map(
+    <Table className={cn("border-t")}>
+      {/* <TableCaption>.</TableCaption> */}
+      <TableHeader>
+        <TableRow>
+          <TableHead>title</TableHead>
+          <TableHead>description</TableHead>
+          <TableHead>tags</TableHead>
+          <TableHead className={cn("w-[120px]")}>date</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {logs
+          .slice((current - 1) * pageSize, current * pageSize)
+          .map(
             (
               { title, description, date, tags }: Log["data"],
               index: number
-            ) => (
-              <Link key={index} href={"/"} legacyBehavior>
-                <TableRow className={cn("cursor-pointer")}>
-                  <TableCell className="font-medium">{title}</TableCell>
-                  <TableCell>{description}</TableCell>
-                  <TableCell>{tags.join(",")}</TableCell>
-                  <TableCell>{date.fromNow()}</TableCell>
-                </TableRow>
-              </Link>
-            )
+            ) => {
+              console.log(dayjs(date));
+              return (
+                <Link key={index} href={"/"} legacyBehavior>
+                  <TableRow className={cn("cursor-pointer")}>
+                    <TableCell className="font-medium">{title}</TableCell>
+                    <TableCell>{description}</TableCell>
+                    <TableCell className={cn("space-x-2")}>
+                      {tags.map((tag: string, index: number) => {
+                        return <Badge key={index}>{tag}</Badge>;
+                      })}
+                    </TableCell>
+                    <TableCell>{dayjs(date).fromNow()}</TableCell>
+                  </TableRow>
+                </Link>
+              );
+            }
           )}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination {...pagination} />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </>
+      </TableBody>
+      <TableFooter>
+        <TableRow>
+          <TableCell colSpan={4}>
+            <TablePagination
+              current={current}
+              total={total}
+              pageSize={pageSize}
+              onPageChange={(prev, curr) => {
+                setPagination({
+                  ...pagination,
+                  current: curr,
+                });
+              }}
+            />
+          </TableCell>
+        </TableRow>
+      </TableFooter>
+    </Table>
   );
 }
