@@ -17,11 +17,11 @@ export default async function About() {
       <h1 className={cn("text-4xl", "font-bold")}>about me</h1>
       <div className={cn("flex", "justify-between", "py-4")}>
         <div className={cn("space-y-4")}>
-          <div className={cn("text-xl", "font-semibold")}>Hi! I'm Ji Hoon.</div>
+          <div className={cn("text-xl", "font-semibold")}>Hi! Im Ji Hoon.</div>
           <div>
-            You can call me 'Hongvyo' as it is my preferred handle/tag on the
+            You can call me Hongvyo as it is my preferred handle/tag on the
             web.
-            <br /> I've been working as a software engineer since 2019. Mostly
+            <br /> Ive been working as a software engineer since 2019. Mostly
             as a backend engineer. <br />
             Although I was not a CS major, I have managed to work for one of the
             best startups in South Korea - Zigbang.
@@ -32,7 +32,7 @@ export default async function About() {
             <br />
             I get too obsessed with it, I just have to create
             something from it.
-            <br /> That's why I launched my very first side project -
+            <br /> Thats why I launched my very first side project -
             Thirteenth,
             <br /> which is an web app for watching global bitcoin arbitrages as
             a heatmap.
