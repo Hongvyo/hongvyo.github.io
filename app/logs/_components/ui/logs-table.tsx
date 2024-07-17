@@ -64,7 +64,7 @@ export function LogsTable({ logs, pagination }: LogsTableProps) {
                   <TableRow className={cn("cursor-pointer")}>
                     <TableCell className="font-medium">{title}</TableCell>
                     <TableCell>{description}</TableCell>
-                    <TableCell className={cn("space-x-2")}>
+                    <TableCell className={cn("space-x-1")}>
                       {tags.map((tag: string, index: number) => {
                         return <Badge key={index}>{tag}</Badge>;
                       })}
