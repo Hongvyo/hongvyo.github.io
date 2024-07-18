@@ -1,3 +1,5 @@
+import { PathLike } from "fs";
+
 export type LogMetadata = {
   title: string;
   date: Date;
@@ -5,10 +7,12 @@ export type LogMetadata = {
   description: string;
   layout: string;
   readTime: number;
+  slug: string;
+  fileName: PathLike;
 };
 
 export type Log = {
   content: string;
-  isEmpty: boolean;
+//   isEmpty: boolean;
   data: LogMetadata;
 };

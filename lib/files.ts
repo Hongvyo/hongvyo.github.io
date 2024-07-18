@@ -4,32 +4,39 @@ import path from "path";
 import readline from "readline";
 import * as Rx from "rxjs";
 
-export async function loadFrontMattersFromDir(
+export async function readMarkdownFromDir(
   dir: PathLike,
   options?: { readContent: boolean | number }
 ) {
   const { readContent } = options || {
-    readContent: false
+    readContent: false,
   };
   const files = await fsPromises.readdir(dir);
   const stream = Rx.from(files).pipe(
     Rx.mergeMap(async (fileName: string, index: number) => {
-      const content: string = await readFrontmatter(
-        path.join(dir.toString(), fileName),
-        {
-          readContent:
-            typeof readContent == "boolean" ? readContent : index < readContent,
-        }
-      );
+      const filePath = path.join(dir.toString(), fileName);
+      const content: string = await readMarkdown(filePath, {
+        readContent:
+          typeof readContent == "boolean" ? readContent : index < readContent,
+      });
       const matterParsed = matter(content);
-      return matterParsed;
+      return {
+        ...matterParsed,
+        data: {
+          ...matterParsed.data,
+          fileName: filePath,
+          slug: fileName.split(".").slice(0, -1).join("-"),
+        },
+      };
     }, 1),
     Rx.toArray()
   );
   return await Rx.lastValueFrom(stream);
 }
 
-export async function readFrontmatter(
+export async function 
+
+export async function readMarkdown(
   file: PathLike,
   { readContent }: { readContent: boolean }
 ): Promise<string> {
@@ -55,7 +62,7 @@ export async function readFrontmatter(
         resolve(lines.join("\n"));
       });
     });
-    console.log(lines)
+    console.log(lines);
     return lines;
   } catch (e) {
     throw e;

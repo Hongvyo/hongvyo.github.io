@@ -43,7 +43,7 @@ export default function RootLayout({
             >
               <div className={clsx("flex-none", "max-w-60")}></div>
               <div
-                className={clsx("flex-1", "max-w-screen-lg", "py-6", "lg:px-8")}
+                className={clsx("flex-1", "max-w-screen-sm", "py-6", "lg:px-8")}
               >
                 {children}
               </div>

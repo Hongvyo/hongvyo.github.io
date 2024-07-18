@@ -21,7 +21,7 @@ export function TablePagination(props: TablePaginationProps) {
   // const [current, setCurrent] = useState(()=>props.)
   const { current, total, pageSize, onPageChange } = props;
   const pages = Array.from({ length: 5 }, (_, i) => {
-    console.log(i + current - 2);
+    // console.log(i + current - 2);
     return i + current - 2;
   });
 
