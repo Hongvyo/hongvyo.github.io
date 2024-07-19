@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
+import Image from "next/image";
 
 export type LogWriterProps = {
   readTime: number;
@@ -10,7 +11,19 @@ export type LogWriterProps = {
 export function LogWriter({ name, date, readTime }: LogWriterProps) {
   return (
     <div className={cn("flex", "space-x-4")}>
-      <div className={cn("bg-muted", "h-12", "aspect-square")}>pic</div>
+      <div className={cn("relative", "h-12", "w-12")}>
+        <Image
+          draggable={false}
+          //   height={64}
+          //   width={64}
+          className={cn("rounded-full")}
+          src="/profile.jpg"
+          alt="me!"
+          layout={"fill"}
+          objectFit="cover"
+          // fill={true}
+        />
+      </div>
       <div>
         <div>{name}</div>
         <div

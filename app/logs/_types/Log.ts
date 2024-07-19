@@ -8,11 +8,15 @@ export type LogMetadata = {
   layout: string;
   readTime: number;
   slug: string;
-  fileName: PathLike;
+  file: {
+    name: string;
+    dir: PathLike;
+  };
+  url: string;
 };
 
 export type Log = {
   content: string;
-//   isEmpty: boolean;
+  //   isEmpty: boolean;
   data: LogMetadata;
 };

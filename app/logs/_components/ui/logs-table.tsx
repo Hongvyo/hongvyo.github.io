@@ -12,7 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Log } from "../../_types/Log";
 import Link from "next/link";
-import { TablePagination, TablePaginationProps } from "./pagination";
+import { ListPagination, ListPaginationProps } from "./pagination";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useState } from "react";
@@ -37,7 +37,7 @@ export type LogsTableProps = {
  */
 export function LogsTable({ logs, pagination }: LogsTableProps) {
   const [{ current, pageSize, total }, setPagination] = useState<
-    Pick<TablePaginationProps, "current" | "pageSize" | "total">
+    Pick<ListPaginationProps, "current" | "pageSize" | "total">
   >(() => pagination);
   return (
     <Table className={cn("border-t")}>
@@ -55,12 +55,12 @@ export function LogsTable({ logs, pagination }: LogsTableProps) {
           .slice((current - 1) * pageSize, current * pageSize)
           .map(
             (
-              { title, description, date, tags }: Log["data"],
+              { title, description, date, tags, url }: Log["data"],
               index: number
             ) => {
               console.log(dayjs(date));
               return (
-                <Link key={index} href={"/"} legacyBehavior>
+                <Link key={index} href={url} legacyBehavior>
                   <TableRow className={cn("cursor-pointer")}>
                     <TableCell className="font-medium">{title}</TableCell>
                     <TableCell>{description}</TableCell>
@@ -79,7 +79,7 @@ export function LogsTable({ logs, pagination }: LogsTableProps) {
       <TableFooter>
         <TableRow>
           <TableCell colSpan={4}>
-            <TablePagination
+            <ListPagination
               current={current}
               total={total}
               pageSize={pageSize}

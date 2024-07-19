@@ -1,46 +1,42 @@
+import dayjs from "dayjs";
 import fs, { promises as fsPromises, PathLike, read } from "fs";
 import matter from "gray-matter";
 import path from "path";
 import readline from "readline";
 import * as Rx from "rxjs";
 
-export async function readMarkdownFromDir(
+export async function readMarkdownsFromDir(
   dir: PathLike,
   options?: { readContent: boolean | number }
-) {
+): Promise<matter.GrayMatterFile<string>[]> {
   const { readContent } = options || {
     readContent: false,
   };
   const files = await fsPromises.readdir(dir);
   const stream = Rx.from(files).pipe(
     Rx.mergeMap(async (fileName: string, index: number) => {
-      const filePath = path.join(dir.toString(), fileName);
-      const content: string = await readMarkdown(filePath, {
-        readContent:
-          typeof readContent == "boolean" ? readContent : index < readContent,
-      });
-      const matterParsed = matter(content);
-      return {
-        ...matterParsed,
-        data: {
-          ...matterParsed.data,
-          fileName: filePath,
-          slug: fileName.split(".").slice(0, -1).join("-"),
-        },
-      };
+      const data: matter.GrayMatterFile<string> = await readMarkdown(
+        dir,
+        fileName,
+        {
+          readContent:
+            typeof readContent == "boolean" ? readContent : index < readContent,
+        }
+      );
+      return data;
     }, 1),
     Rx.toArray()
   );
   return await Rx.lastValueFrom(stream);
 }
 
-export async function 
-
 export async function readMarkdown(
-  file: PathLike,
+  dir: PathLike,
+  fileName: string,
   { readContent }: { readContent: boolean }
-): Promise<string> {
-  const readable = fs.createReadStream(file);
+): Promise<matter.GrayMatterFile<string>> {
+  const filePath = path.join(dir.toString(), fileName);
+  const readable = fs.createReadStream(filePath);
   try {
     const reader = readline.createInterface({ input: readable });
     let frontmatterElimFound = 0;
@@ -62,8 +58,18 @@ export async function readMarkdown(
         resolve(lines.join("\n"));
       });
     });
-    console.log(lines);
-    return lines;
+    const parsed = matter(lines);
+    return {
+      ...parsed,
+      data: {
+        ...parsed.data,
+        date: dayjs(String(parsed.data.date)).toDate(),
+        file: {
+          name: fileName,
+          dir: dir,
+        },
+      },
+    };
   } catch (e) {
     throw e;
   } finally {

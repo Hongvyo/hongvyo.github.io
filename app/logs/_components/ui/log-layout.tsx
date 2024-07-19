@@ -9,6 +9,7 @@ import { LogActions } from "./log-actions";
 import { LogWriter } from "./log-writer";
 import { cn } from "@/lib/utils";
 import { Log, LogMetadata } from "../../_types/Log";
+import { LogContent } from "./log-content";
 
 export type LogPageLayoutProps = {
   children?: React.ReactNode;
@@ -21,33 +22,32 @@ export async function readFileFromSlug(
   category: Categories
 ): Promise<Log> {
   try {
-    const file = path.join(
-      process.cwd(),
-      "app",
-      "logs",
-      category,
-      "logs",
-      slug.replaceAll("-", ".") + ".md"
+    const dir = path.join(process.cwd(), "app", "logs", category, "logs");
+    const { content, data } = await readMarkdown(
+      dir,
+      slug.replaceAll("-", ".") + ".md",
+      { readContent: true }
     );
-    const md = await readMarkdown(file, { readContent: true });
     // console.log(data);
     return {
-        content: md.
+      content,
+      data: {
+        title: data.title,
+        date: data.date,
+        tags: data.tags.split(","),
+        description: data.description,
+        layout: data.layout,
+        readTime: readingTime(content).time,
+        slug,
+        file: data.file,
+        url: `/logs/${category}//${slug}`,
+      },
     };
   } catch (err) {
     console.log(err);
     throw err;
   }
 }
-
-// function parseSlug(slug: string) {
-//   const splitted = slug.split("-");
-//   const date = splitted.slice(-1);
-//   return {
-//     title: splitted.slice(0, -1).join(" "),
-//     date: date,
-//   };
-// }
 
 export async function LogPageLayout({
   slug,
@@ -57,12 +57,12 @@ export async function LogPageLayout({
   //   const parsed = parseSlug(slug);
   //   console.log(parsed);
   const { data, content } = await readFileFromSlug(slug, category);
-  const readTime = readingTime(content).time;
   return (
-    <div className={cn("space-y-8")}>
-      <LogHeader title={data.title} tags={data.tags} />
-      <LogWriter name={"hongvyo"} date={data.date} readTime={readTime} />
+    <div className={cn("space-y-12", "max-w-screen-md", "m-auto", "p-4")}>
+      <LogHeader title={data.title} tags={data.tags} category={category} />
+      <LogWriter name={"hongvyo"} date={data.date} readTime={data.readTime} />
       <LogActions slug={data.slug} />
+      <LogContent content={content}></LogContent>
     </div>
   );
 }

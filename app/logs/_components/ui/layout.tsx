@@ -7,7 +7,7 @@ import matter from "gray-matter";
 import { plainToInstance, instanceToPlain } from "class-transformer";
 import readingTime from "reading-time";
 import { LogsTable } from "./logs-table";
-import { loadFrontMattersFromDir } from "@/lib/files";
+import { readMarkdownsFromDir } from "@/lib/files";
 import dayjs from "dayjs";
 import { Categories } from "../../_types/constants";
 
@@ -24,9 +24,13 @@ export type LogsPageLayoutProps = Readonly<{
   //   params: LogsPageParams;
 }>;
 
-function parseFrontmatter(frontmatter: any): LogMetadata {
+function createLogMetadata(
+  frontmatter: any,
+  category: Categories
+): LogMetadata {
   const { data, content } = frontmatter;
   const day = dayjs(String(data.date));
+  const slug = data.file.name.split(".").slice(0, -1).join("-");
   return {
     title: data.title,
     date: day.toDate(),
@@ -34,6 +38,9 @@ function parseFrontmatter(frontmatter: any): LogMetadata {
     readTime: readingTime(content).time,
     description: data.description,
     tags: data.tags.split(","),
+    file: data.file,
+    slug,
+    url: `/logs/${category}/${slug}`,
   };
 }
 
@@ -42,49 +49,30 @@ export async function LogsPageLayout({
   metadata,
 }: LogsPageLayoutProps) {
   const { category } = metadata;
-  const files = await loadFrontMattersFromDir(
+  const files = await readMarkdownsFromDir(
     path.join(process.cwd(), "app", "logs", category, "logs"),
     { readContent: 4 }
   );
   return (
-    <div className={cn("space-y-8")}>
-      <div className={cn("text-3xl", "font-semibold")} id={`logs/${category}`}>
-        logs/{category}
+    <div className={cn("space-y-12", "max-w-screen-md", "m-auto")}>
+      <div
+        className={cn(
+          "text-muted-foreground",
+          "text-4xl",
+          "font-semibold",
+          "mb-4"
+        )}
+      >
+        list of logs/<span className={cn("text-foreground")}>{category}</span>
       </div>
-      <div>quick links</div>
-      <div>
-        <div className={cn("text-2xl", "font-semibold", "mb-4")}>
-          recent posts
-        </div>
-        <LogsList
-          logs={files.slice(0, 4).map((frontmatter: any) => {
-            //   const parsed: LogsMatterData = mattered
-            //     .data as LogsMatterData;
-            //   console.log(mattered);
-            return parseFrontmatter(frontmatter);
-          })}
-        />
-      </div>
-
-      <LogsTable
+      <LogsList
         logs={files.map((frontmatter: any) => {
-          return parseFrontmatter(frontmatter);
-          //   return {
-          //     title: frontmatter.title,
-          //     date: frontmatter.date.fromNow(),
-          //     tags: frontmatter.tags.split(","),
-          //     description: frontmatter.description,
-          //     readTime: 0,
-          //     layout: frontmatter.layout
-          //   };
+          //   const parsed: LogsMatterData = mattered
+          //     .data as LogsMatterData;
+          //   console.log(mattered);
+          return createLogMetadata(frontmatter, category);
         })}
-        pagination={{
-          current: 1,
-          total: files.length / 20,
-          pageSize: 20,
-        }}
       />
-      {/* <div>{children}</div> */}
     </div>
   );
 }

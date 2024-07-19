@@ -10,26 +10,28 @@ import {
 } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
 
-export type TablePaginationProps = {
+export type ListPaginationProps = {
   current: number;
   total: number;
   pageSize: number;
   onPageChange: (prev: number, curr: number) => void;
 };
 
-export function TablePagination(props: TablePaginationProps) {
+export function ListPagination(props: ListPaginationProps) {
   // const [current, setCurrent] = useState(()=>props.)
   const { current, total, pageSize, onPageChange } = props;
   const pages = Array.from({ length: 5 }, (_, i) => {
     // console.log(i + current - 2);
     return i + current - 2;
   });
+  console.log(pages, current, total)
 
   return (
     <Pagination>
       <PaginationContent className={cn("justify-end", "w-full")}>
         <PaginationItem>
           <PaginationPrevious
+            size="sm"
             className={cn(
               "cursor-pointer",
               current - 1 < 1 &&
@@ -43,18 +45,23 @@ export function TablePagination(props: TablePaginationProps) {
           />
         </PaginationItem>
         {pages.map((pageNo: number) => {
-          if (pageNo < 1 || total < pageNo - 1) {
+          if (pageNo < 1 || total < pageNo ) {
             return (
               <PaginationItem key={pageNo}>
-                <PaginationLink className={cn("hover:bg-transparent", "h-1")} />
+                <PaginationLink
+                  size="sm"
+                  className={cn("hover:bg-transparent", "h-1")}
+                />
               </PaginationItem>
             );
           }
           return (
             <PaginationItem key={pageNo}>
               <PaginationLink
+                size="sm"
                 className={cn(
                   "cursor-pointer",
+                  "text-sm",
                   current == pageNo ? "bg-muted font-semibold" : ""
                 )}
                 onClick={() => {
@@ -75,6 +82,7 @@ export function TablePagination(props: TablePaginationProps) {
         </PaginationItem> */}
         <PaginationItem>
           <PaginationNext
+            size="sm"
             className={cn(
               "cursor-pointer",
               current + 1 > total &&
